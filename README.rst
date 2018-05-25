@@ -113,4 +113,4 @@ details see the LICENSE_ file.
 .. |Travis build| image:: https://travis-ci.org/j-faria/pySWEETCat.svg?branch=master
     :target: https://travis-ci.org/j-faria/pySWEETCat
 .. |PyPI version| image:: https://badge.fury.io/py/pySWEETCat.svg
-   :target: https://pypi.org/project/pySWEETCat/
+    :target: https://badge.fury.io/py/pySWEETCat

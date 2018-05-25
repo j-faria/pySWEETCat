@@ -7,6 +7,8 @@ import math
 # the link in the "Download Data" button
 download_link = 'https://www.astro.up.pt/resources/sweet-cat/download.php'
 
+# to get the directory where SWEET-Cat data will be stored
+from .config import get_data_dir
 
 def download_data():
     """ Download SWEET-Cat data and save it to `SWEET_cat.tsv` """
@@ -14,7 +16,7 @@ def download_data():
     with request.urlopen(download_link) as response:
        data = response.read()
 
-    local_file = 'SWEET_cat.tsv'
+    local_file = os.path.join(get_data_dir(), 'SWEET_cat.tsv')
     with open(local_file, 'wb') as f:
         f.write(data)
 
@@ -23,20 +25,39 @@ def download_data():
 
 def check_data_age():
     """ How old is `SWEET_cat.tsv`, in days """
-    age = time.time() - os.path.getmtime('SWEET_cat.tsv') # in sec
+    local_file = os.path.join(get_data_dir(), 'SWEET_cat.tsv')
+    age = time.time() - os.path.getmtime(local_file) # in sec
     return age / (60*60*24) # in days
 
 
 class DataDict(dict):
+    numpy_entries = False
+
     __doc__ = "SWEET-Cat: a catalog of stellar parameters for stars with planets\n"+\
               "The catalog and more information can be found at www.astro.up.pt/resources/sweet-cat\n"+\
               "This dictionary has the same fields as keys "+\
-              "(note that 'sigma' and 'pi' can be used instead of 'σ' and 'π')"
+              "(note that 'sigma' and 'pi' can be used instead of 'σ' and 'π')\n"+\
+              "Entries are lists, see `to_numpy()` to convert them to numpy arrays."
 
     def __getitem__(self, key):
         # allows to do data['sigma_feh'] to get data['σ_feh']
         key = key.replace('sigma', 'σ').replace('pi', 'π')
-        val = super().__getitem__(key)
+        
+        # allows to do data['key_nonan'] to get data['key'] without NaNs
+        if key.endswith('_nonan'):
+            val = super().__getitem__(key.replace('_nonan',''))
+            try:
+                if self.numpy_entries:
+                    from numpy import isnan
+                    val = val[~isnan(val)]
+                else:
+                    val = [v for v in val if not math.isnan(v)]
+            except TypeError:
+                # this column does not have floats
+                pass
+        else:
+            val = super().__getitem__(key)
+
         return val
 
     def __str__(self):
@@ -51,6 +72,19 @@ class DataDict(dict):
     @property
     def size(self):
         return len(self.__getitem__('name'))
+
+    def to_numpy(self, inplace=True):
+        """ 
+        Convert entries to numpy arrays. If `inplace` is True convert
+        the entries in place, else return a new dictionary.
+        """
+        from numpy import asarray # this assumes numpy is installed
+        newself = self if inplace else DataDict()
+        for k, v in self.items():
+            newself[k] = asarray(v)
+        newself.numpy_entries = True
+        if not inplace:
+            return newself
 
 
 def read_data():
@@ -77,7 +111,7 @@ def read_data():
     data = {label:[] for label in labels}
 
     # read the file
-    local_file = 'SWEET_cat.tsv'
+    local_file = os.path.join(get_data_dir(), 'SWEET_cat.tsv')
     lines = open(local_file).readlines()
 
     nlab, nlin = len(labels), len(lines)
@@ -97,8 +131,9 @@ def read_data():
     data = DataDict(**data)
     return data
 
-if __name__ == '__main__':
-    local_file = 'SWEET_cat.tsv'
+
+def get_data():
+    local_file = os.path.join(get_data_dir(), 'SWEET_cat.tsv')
 
     if not os.path.exists(local_file):
         print ('Downloading SWEET-Cat data')
@@ -112,3 +147,8 @@ if __name__ == '__main__':
         print ('Data in `SWEET_cat.tsv` is recent.')
 
     data = read_data()
+    return data
+
+
+if __name__ == '__main__':
+    data = get_data()

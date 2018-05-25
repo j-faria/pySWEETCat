@@ -9,7 +9,7 @@ and builds a (custom) dictionary with each column.
 It is a pure-Python package with no extra dependencies (see below).
 
 
-|License MIT| |PyPI version|
+|License MIT| |Travis build| |PyPI version|
 
 How to use
 ----------
@@ -110,5 +110,7 @@ details see the LICENSE_ file.
 .. _License: https://github.com/j-faria/pySWEETCat/blob/master/LICENSE
 .. |License MIT| image:: http://img.shields.io/badge/license-MIT-blue.svg?style=flat
    :target: https://github.com/j-faria/pySWEETCat/blob/master/LICENSE
+.. |Travis build| image:: https://travis-ci.org/j-faria/pySWEETCat.svg?branch=master
+    :target: https://travis-ci.org/j-faria/pySWEETCat
 .. |PyPI version| image:: https://badge.fury.io/py/pySWEETCat.svg
    :target: https://pypi.org/project/pySWEETCat/

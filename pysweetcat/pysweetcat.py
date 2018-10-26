@@ -3,6 +3,7 @@ import os
 from urllib import request
 import time
 import math
+import pprint
 
 # the link in the "Download Data" button
 download_link = 'https://www.astro.up.pt/resources/sweet-cat/download.php'
@@ -64,10 +65,14 @@ class DataDict(dict):
         return 'SWEET-Cat data'
     def __repr__(self):
         return f'SWEET-Cat data: dictionary with {self.size} entries. '+\
-                'Use .keys() to get the column labels.'
+                'Use .columns() to get the column labels.'
                 
     def __len__(self):
         return len(self.__getitem__('name'))
+
+    def columns(self):
+        """ List the available columns """
+        pprint.pprint(list(self.keys()), compact=True)
 
     @property
     def size(self):

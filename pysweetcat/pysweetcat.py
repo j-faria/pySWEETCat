@@ -41,6 +41,10 @@ class DataDict(dict):
               "Entries are lists, see `to_numpy()` to convert them to numpy arrays."
 
     def __getitem__(self, key):
+        # allows to do data[0] to get all columns for the 0th entry in the table
+        if isinstance(key, int):
+            return {k:v[key] for k, v in self.items()}
+
         # allows to do data['sigma_feh'] to get data['σ_feh']
         key = key.replace('sigma', 'σ').replace('pi', 'π')
         

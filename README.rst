@@ -9,7 +9,7 @@ and builds a (custom) dictionary with each column.
 It is a pure-Python package with no extra dependencies (see below).
 
 
-|License MIT| |Travis build| |PyPI version|
+|License MIT| |PyPI version|
 
 How to use
 ----------
@@ -37,9 +37,9 @@ which downloads the data from the online archive and returns it in a dictionary.
 .. code::
 
     Downloading SWEET-Cat data
-    Saved SWEET-Cat data to $HOME/.pysweetcat/SWEET_cat.tsv
-    Data in `SWEET_cat.tsv` is recent.
-    There are 25 columns with 2627 entries each in `SWEET_cat.tsv`
+    Saved SWEET-Cat data to $HOME/.pysweetcat/SWEET_cat.csv
+    Data in `SWEET_cat.csv` is recent.
+    There are 25 columns with 2627 entries each in `SWEET_cat.csv`
 
 where ``$HOME`` will  be your home directory.
 The second time you call ``get_data()`` it will check if the data was downloaded recently, 
@@ -51,8 +51,8 @@ and only conditionally download it again.
 
 .. code::
 
-    Data in `SWEET_cat.tsv` is recent.
-    There are 25 columns with 2627 entries each in `SWEET_cat.tsv`
+    Data in `SWEET_cat.csv` is recent.
+    There are 25 columns with 2627 entries each in `SWEET_cat.csv`
 
 Now, `data` is (basically) a Python dictionary with the each column as keys.
 But it has a couple extra methods and properties. For example
@@ -93,8 +93,9 @@ we can use
 
 which allows us to more easily do histograms of the values.
 
-Finnally, the ``.to_numpy(inplace=True)`` method converts all the columns to numpy arrays, either in place or not
-(this is the only function in **pySWEETCat** that requires numpy).
+Finnally, the ``.to_numpy(inplace=True)`` method converts all the columns to
+numpy arrays, either in place or not (this is the only function in
+**pySWEETCat** that requires numpy).
 
 
 License
@@ -110,7 +111,5 @@ details see the LICENSE_ file.
 .. _License: https://github.com/j-faria/pySWEETCat/blob/master/LICENSE
 .. |License MIT| image:: http://img.shields.io/badge/license-MIT-blue.svg?style=flat
    :target: https://github.com/j-faria/pySWEETCat/blob/master/LICENSE
-.. |Travis build| image:: https://travis-ci.org/j-faria/pySWEETCat.svg?branch=master
-    :target: https://travis-ci.org/j-faria/pySWEETCat
 .. |PyPI version| image:: https://badge.fury.io/py/pySWEETCat.svg
     :target: https://badge.fury.io/py/pySWEETCat

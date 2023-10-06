@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(name='pySWEETCat',
-      version='1.0.3',
+      version='1.1.0',
       description='A pure-Python package to download data from SWEET-Cat',
       long_description=open('README.rst').read(),
       author='João Faria',

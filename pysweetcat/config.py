@@ -1,5 +1,7 @@
 import os
 
+verbose = False
+
 def _create_data_dir():
     """ Create empty directory where SWEET_cat.tsv will be stored """
     home = os.path.expanduser("~")

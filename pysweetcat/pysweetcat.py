@@ -5,28 +5,31 @@ import time
 import math
 import pprint
 
-# the link in the "Download Data" button
-download_link = 'https://www.astro.up.pt/resources/sweet-cat/download.php'
+# the link in the "Download Data" button [OLD]
+# download_link = 'https://www.astro.up.pt/resources/sweet-cat/download.php'
+# new link
+download_link = 'http://sweetcat.iastro.pt/catalog/SWEETCAT_Dataframe.csv'
 
 # to get the directory where SWEET-Cat data will be stored
-from .config import get_data_dir
+from .config import get_data_dir, verbose
 
 def download_data():
-    """ Download SWEET-Cat data and save it to `SWEET_cat.tsv` """
+    """ Download SWEET-Cat data and save it to `SWEET_cat.csv` """
 
     with request.urlopen(download_link) as response:
        data = response.read()
 
-    local_file = os.path.join(get_data_dir(), 'SWEET_cat.tsv')
+    local_file = os.path.join(get_data_dir(), 'SWEET_cat.csv')
     with open(local_file, 'wb') as f:
         f.write(data)
 
-    print(f'Saved SWEET-Cat data to {local_file}')
+    if verbose:
+        print(f'Saved SWEET-Cat data to {local_file}')
 
 
 def check_data_age():
-    """ How old is `SWEET_cat.tsv`, in days """
-    local_file = os.path.join(get_data_dir(), 'SWEET_cat.tsv')
+    """ How old is `SWEET_cat.csv`, in days """
+    local_file = os.path.join(get_data_dir(), 'SWEET_cat.csv')
     age = time.time() - os.path.getmtime(local_file) # in sec
     return age / (60*60*24) # in days
 
@@ -82,6 +85,10 @@ class DataDict(dict):
     def size(self):
         return len(self.__getitem__('name'))
 
+    def find(self, name):
+        if name in self.__getitem__('name'):
+            return self[self['name'].index(name)]
+
     def to_numpy(self, inplace=True):
         """ 
         Convert entries to numpy arrays. If `inplace` is True convert
@@ -110,25 +117,33 @@ def read_data():
         except ValueError:
             return val
 
-    labels = ['name', 'HD', 
-              'ra', 'dec', 'vmag', 'σ_vmag', 'π', 'σ_π', 'source_π',
-              'teff', 'σ_teff', 'logg', 'σ_logg', 'LC_logg', 'σ_LC_logg',
-              'vt', 'σ_vt', 'feh', 'σ_feh', 'mass', 'σ_mass', 'reference',
-              'homogeneity', 'last_update', 'comments']
+    labels = [
+        'name', 'HD', 
+        'ra', 'dec', 'Vmag', 'σ_vmag', 'plx_flag',
+        'teff', 'σ_teff', 'logg', 'σ_logg', 'vt', 'σ_vt', 'feh', 'σ_feh', 
+        'reference', 'link', 'sw_flag', 'update', 'comment', 'database',
+        'gaia_dr2', 'gaia_dr3', 'π', 'σ_π', 'Gmag', 'σ_Gmag'
+        'RPmag', 'σ_RPmag', 'BPmag', 'σ_BPmag', 'FG', 'σ_FG', 
+        'G_flux_std_n', 'logg_gaia', 'σ_logg_gaia', 'mass_t', 'σ_mass_t',
+        'radius_t','σ_radius_t', 'spec_base', 'distance', 
+        'ra_EU', 'dec_EU', 'ra_NASA', 'dec_NASA', 
+        'distance_b', 'σ_distance_b'
+    ]
 
     # empty dictionary to save data
     data = {label:[] for label in labels}
 
     # read the file
-    local_file = os.path.join(get_data_dir(), 'SWEET_cat.tsv')
+    local_file = os.path.join(get_data_dir(), 'SWEET_cat.csv')
     lines = open(local_file).readlines()
 
     nlab, nlin = len(labels), len(lines)
-    print(f'There are {nlab} columns with {nlin} entries each in `SWEET_cat.tsv`')
+    if verbose:
+        print(f'There are {nlab} columns with {nlin} entries each in `SWEET_cat.csv`')
 
     for line in lines:
         # split the columns
-        vals = line.strip().split('\t')
+        vals = line.strip().split(',')
         # make some columns into ints
         vals = vals[:4] + list(map(val2int, vals[4:]))
         # make some columns into floats
@@ -142,18 +157,21 @@ def read_data():
 
 
 def get_data():
-    local_file = os.path.join(get_data_dir(), 'SWEET_cat.tsv')
+    local_file = os.path.join(get_data_dir(), 'SWEET_cat.csv')
 
     if not os.path.exists(local_file):
-        print ('Downloading SWEET-Cat data')
+        if verbose:
+            print('Downloading SWEET-Cat data')
         download_data()
     
     age = check_data_age()
     if age > 5:
-        print ('Data in `SWEET_cat.tsv` is older than 5 days, downloading.')
+        if verbose:
+            print('Data in `SWEET_cat.csv` is older than 5 days, downloading.')
         download_data()
     else:
-        print ('Data in `SWEET_cat.tsv` is recent.')
+        if verbose:
+            print('Data in `SWEET_cat.csv` is recent.')
 
     data = read_data()
     return data

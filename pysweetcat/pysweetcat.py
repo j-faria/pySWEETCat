@@ -135,7 +135,7 @@ def read_data():
 
     # read the file
     local_file = os.path.join(get_data_dir(), 'SWEET_cat.csv')
-    lines = open(local_file).readlines()
+    lines = open(local_file, encoding='utf-8').readlines()
 
     nlab, nlin = len(labels), len(lines)
     if verbose:

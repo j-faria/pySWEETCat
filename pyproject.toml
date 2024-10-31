@@ -1,0 +1,27 @@
+[project]
+name = "pySWEETCat"
+version = "1.1.0"
+description = "A pure-Python package to download data from SWEET-Cat"
+authors = [
+    {name = "João Faria", email = "joao.faria@unige.ch"},
+]
+
+requires-python = ">=3.7"
+readme = {file = "README.rst", content-type = "text/x-rst"}
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+
+[project.urls]
+Homepage = "https://github.com/j-faria/pWEETCat"
+Repository = "https://github.com/j-faria/pySWEETCat"
+Issues = "https://github.com/j-faria/pySWEETCat/issues"
+
+[tool.setuptools]
+packages = ['pysweetcat']
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+

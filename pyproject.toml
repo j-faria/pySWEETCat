@@ -1,6 +1,6 @@
 [project]
 name = "pySWEETCat"
-version = "1.1.0"
+version = "1.1.1"
 description = "A pure-Python package to download data from SWEET-Cat"
 authors = [
     {name = "João Faria", email = "joao.faria@unige.ch"},
